@@ -16,6 +16,8 @@ const GestureRoot = GestureHandlerRootView as React.ComponentType<
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
     ...MaterialIcons.font,
+    material: require('../assets/fonts/material.ttf'),
+    MaterialIcons: require('../assets/fonts/MaterialIcons.ttf'),
   });
 
   useEffect(() => {
