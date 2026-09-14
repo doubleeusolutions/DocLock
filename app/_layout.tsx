@@ -1,10 +1,12 @@
 import React, { PropsWithChildren, useEffect } from 'react';
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform, View, ActivityIndicator } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as NavigationBar from 'expo-navigation-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useFonts } from 'expo-font';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Colors } from '@/theme';
 
 const GestureRoot = GestureHandlerRootView as React.ComponentType<
@@ -12,6 +14,10 @@ const GestureRoot = GestureHandlerRootView as React.ComponentType<
 >;
 
 export default function RootLayout() {
+  const [fontsLoaded, fontError] = useFonts({
+    ...MaterialIcons.font,
+  });
+
   useEffect(() => {
     if (Platform.OS === 'android') {
       NavigationBar.setPositionAsync('absolute').catch(() => {});
@@ -19,6 +25,15 @@ export default function RootLayout() {
       NavigationBar.setButtonStyleAsync('dark').catch(() => {});
     }
   }, []);
+
+  if (!fontsLoaded && !fontError) {
+    return (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <StatusBar style="dark" translucent backgroundColor="transparent" />
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <GestureRoot style={styles.container}>
@@ -99,5 +114,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
